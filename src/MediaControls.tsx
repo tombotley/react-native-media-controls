@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Animated,
@@ -81,6 +81,12 @@ const MediaControls = (props: Props) => {
       }
     });
   };
+
+  useEffect(() => {
+    if (!isLoading) {
+      fadeOutControls(fadeOutDelay);
+    }
+  }, [isLoading]);
 
   const fadeInControls = (loop = true) => {
     setIsVisible(true);

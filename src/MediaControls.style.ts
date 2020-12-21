@@ -1,13 +1,10 @@
 import { StyleSheet } from "react-native";
 
-const containerBackgroundColor = "rgba(45, 59, 62, 0.4)";
-const playButtonBorderColor = "rgba(255,255,255,0.5)";
 const white = "#fff";
 
 export default StyleSheet.create({
   container: {
     alignItems: "center",
-    backgroundColor: containerBackgroundColor,
     bottom: 0,
     flex: 1,
     flexDirection: "column",
@@ -28,14 +25,12 @@ export default StyleSheet.create({
   fullScreenContainer: {
     alignItems: "center",
     alignSelf: "stretch",
-    justifyContent: "center",
+    justifyContent: "flex-end",
     paddingLeft: 20,
+    marginBottom: 10,
   },
   playButton: {
     alignItems: "center",
-    borderColor: playButtonBorderColor,
-    borderRadius: 3,
-    borderWidth: 1.5,
     height: 50,
     justifyContent: "center",
     width: 50,
@@ -51,7 +46,7 @@ export default StyleSheet.create({
   progressContainer: {
     flexDirection: "row",
     justifyContent: "flex-end",
-    marginBottom: -25,
+    alignItems: "flex-end",
   },
   progressSlider: {
     alignSelf: "stretch",
@@ -62,7 +57,7 @@ export default StyleSheet.create({
     width: 25,
   },
   thumb: {
-    backgroundColor: white,
+    backgroundColor: "#f80e37",
     borderRadius: 50,
     borderWidth: 3,
     height: 20,
