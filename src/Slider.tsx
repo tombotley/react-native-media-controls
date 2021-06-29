@@ -60,9 +60,6 @@ const Slider = (props: Props) => {
     onPause();
   };
 
-  console.log('duration', duration, humanizeVideoDuration(duration));
-  console.log('progress', progress, humanizeVideoDuration(progress))
-
   return (
     <View
       style={[styles.controlsRow, styles.progressContainer, containerStyle]}
@@ -73,7 +70,9 @@ const Slider = (props: Props) => {
             {humanizeVideoDuration(progress)}
           </Text>
           <Text style={styles.timerLabel}>
-            {streamType === "onDemand" ? humanizeVideoDuration(duration) : "Live"}
+            {streamType === "onDemand"
+              ? humanizeVideoDuration(duration)
+              : "Live"}
           </Text>
         </View>
         <RNSlider

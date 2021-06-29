@@ -9,11 +9,11 @@ const rewindIcon = require("./assets/ic_rw.png");
 const fastforwardIcon = require("./assets/ic_ff.png");
 
 type ControlsProps = Pick<
-  Props, 
-  | "isLoading" 
-  | "playerState" 
-  | "onReplay" 
-  | "duration" 
+  Props,
+  | "isLoading"
+  | "playerState"
+  | "onReplay"
+  | "duration"
   | "progress"
   | "onSeek"
   | "streamType"
@@ -22,10 +22,10 @@ type ControlsProps = Pick<
 };
 
 const Controls = (props: ControlsProps) => {
-  const { 
-    isLoading, 
-    playerState, 
-    onReplay, 
+  const {
+    isLoading,
+    playerState,
+    onReplay,
     onPause,
     duration,
     progress,
@@ -50,7 +50,7 @@ const Controls = (props: ControlsProps) => {
     <ActivityIndicator size="large" color="#FFF" />
   ) : (
     <>
-      {streamType === "onDemand" && playerState !== PLAYER_STATES.ENDED &&
+      {streamType === "onDemand" && playerState !== PLAYER_STATES.ENDED && (
         <TouchableOpacity
           style={[styles.playButton]}
           onPress={rwTenSeconds}
@@ -59,16 +59,18 @@ const Controls = (props: ControlsProps) => {
         >
           <Image source={rewindIcon} style={styles.playIcon} />
         </TouchableOpacity>
-      }
+      )}
       <TouchableOpacity
         style={[styles.playButton]}
         onPress={pressAction}
-        accessibilityLabel={PLAYER_STATES.PAUSED ? "Tap to Play" : "Tap to Pause"}
+        accessibilityLabel={
+          PLAYER_STATES.PAUSED ? "Tap to Play" : "Tap to Pause"
+        }
         accessibilityHint={"Plays and Pauses the Video"}
       >
         <Image source={icon} style={styles.playIcon} />
       </TouchableOpacity>
-      {streamType === "onDemand" && playerState !== PLAYER_STATES.ENDED &&
+      {streamType === "onDemand" && playerState !== PLAYER_STATES.ENDED && (
         <TouchableOpacity
           style={[styles.playButton]}
           onPress={ffTenSeconds}
@@ -77,7 +79,7 @@ const Controls = (props: ControlsProps) => {
         >
           <Image source={fastforwardIcon} style={styles.playIcon} />
         </TouchableOpacity>
-      }
+      )}
     </>
   );
 
