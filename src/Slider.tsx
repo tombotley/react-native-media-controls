@@ -21,6 +21,7 @@ type Props = Pick<
   | "playerState"
   | "onSeek"
   | "onSeeking"
+  | "streamType"
 > & {
   onPause: () => void;
   customSliderStyle?: CustomSliderStyle;
@@ -36,6 +37,7 @@ const Slider = (props: Props) => {
     onFullScreen,
     onPause,
     progress,
+    streamType,
   } = props;
 
   const containerStyle = customSliderStyle?.containerStyle || {};
@@ -58,6 +60,9 @@ const Slider = (props: Props) => {
     onPause();
   };
 
+  console.log('duration', duration, humanizeVideoDuration(duration));
+  console.log('progress', progress, humanizeVideoDuration(progress))
+
   return (
     <View
       style={[styles.controlsRow, styles.progressContainer, containerStyle]}
@@ -68,7 +73,7 @@ const Slider = (props: Props) => {
             {humanizeVideoDuration(progress)}
           </Text>
           <Text style={styles.timerLabel}>
-            {humanizeVideoDuration(duration)}
+            {streamType === "onDemand" ? humanizeVideoDuration(duration) : "Live"}
           </Text>
         </View>
         <RNSlider

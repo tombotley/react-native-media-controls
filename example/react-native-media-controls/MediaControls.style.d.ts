@@ -1,7 +1,6 @@
 declare const _default: {
     container: {
         alignItems: "center";
-        backgroundColor: string;
         bottom: number;
         flex: number;
         flexDirection: "column";
@@ -17,19 +16,17 @@ declare const _default: {
         alignItems: "center";
         alignSelf: "stretch";
         flex: number;
-        justifyContent: "center";
+        justifyContent: "space-evenly";
     };
     fullScreenContainer: {
         alignItems: "center";
         alignSelf: "stretch";
-        justifyContent: "center";
+        justifyContent: "flex-end";
         paddingLeft: number;
+        marginBottom: number;
     };
     playButton: {
         alignItems: "center";
-        borderColor: string;
-        borderRadius: number;
-        borderWidth: number;
         height: number;
         justifyContent: "center";
         width: number;
@@ -45,7 +42,7 @@ declare const _default: {
     progressContainer: {
         flexDirection: "row";
         justifyContent: "flex-end";
-        marginBottom: number;
+        alignItems: "flex-end";
     };
     progressSlider: {
         alignSelf: "stretch";

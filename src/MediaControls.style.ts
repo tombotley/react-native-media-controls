@@ -20,7 +20,8 @@ export default StyleSheet.create({
     alignItems: "center",
     alignSelf: "stretch",
     flex: 1,
-    justifyContent: "center",
+    justifyContent: "space-evenly",
+    flexDirection: "row",
   },
   fullScreenContainer: {
     alignItems: "center",

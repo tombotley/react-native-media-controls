@@ -6,7 +6,7 @@ export declare type CustomSliderStyle = {
     trackStyle: ViewStyle;
     thumbStyle: ViewStyle;
 };
-declare type Props = Pick<MediaControlsProps, "progress" | "duration" | "mainColor" | "onFullScreen" | "playerState" | "onSeek" | "onSeeking"> & {
+declare type Props = Pick<MediaControlsProps, "progress" | "duration" | "mainColor" | "onFullScreen" | "playerState" | "onSeek" | "onSeeking" | "live"> & {
     onPause: () => void;
     customSliderStyle?: CustomSliderStyle;
 };

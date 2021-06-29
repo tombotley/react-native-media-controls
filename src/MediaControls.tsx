@@ -30,6 +30,7 @@ export type Props = {
   showOnStart?: boolean;
   sliderStyle: CustomSliderStyle;
   toolbarStyle: ViewStyle;
+  streamType: "onDemand" | "live" | "livePlayFromStart";
 };
 
 const MediaControls = (props: Props) => {
@@ -49,6 +50,7 @@ const MediaControls = (props: Props) => {
     showOnStart = true,
     sliderStyle, // defaults are applied in Slider.tsx
     toolbarStyle: customToolbarStyle = {},
+    streamType,
   } = props;
   const { initialOpacity, initialIsVisible } = (() => {
     if (showOnStart) {
@@ -157,6 +159,10 @@ const MediaControls = (props: Props) => {
               onReplay={onReplay}
               isLoading={isLoading}
               playerState={playerState}
+              progress={progress}
+              duration={duration}
+              streamType={streamType}
+              onSeek={onSeek}
             />
             <Slider
               progress={progress}
@@ -168,6 +174,7 @@ const MediaControls = (props: Props) => {
               onSeeking={onSeeking}
               onPause={onPause}
               customSliderStyle={sliderStyle}
+              streamType={streamType}
             />
           </View>
         )}

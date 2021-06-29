@@ -14,18 +14,23 @@ module.exports = {
     const external = config.external;
     config.external = id => external(id) || id.endsWith(".png");
 
-    config.plugins = [
-      ...config.plugins,
-      copy({
-        targets: [
-          {
-            src: "src/assets/*",
-            dest: `${outputDirectory}/assets`,
-            createPath: true,
-          },
-        ],
-      }),
-    ];
+    /* 
+      the below copy function is causing "Error: EBUSY: resource busy or 
+      locked, copyfile" when trying to copy assets from src to dist during 
+      build process so comment out and copy files manually after build 
+    */
+    // config.plugins = [
+    //   ...config.plugins,
+    //   copy({
+    //     targets: [
+    //       {
+    //         src: "src/assets/*",
+    //         dest: `${outputDirectory}/assets`,
+    //         createPath: true,
+    //       },
+    //     ],
+    //   }),
+    // ];
 
     if (localDev) {
       config.output.file = config.output.file.replace("dist", outputDirectory);

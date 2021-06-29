@@ -1,14 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, ActivityIndicator, TouchableOpacity, Image, View, Text, Animated, TouchableWithoutFeedback } from 'react-native';
 import RNSlider from 'react-native-slider';
 
-var containerBackgroundColor = "rgba(45, 59, 62, 0.4)";
-var playButtonBorderColor = "rgba(255,255,255,0.5)";
 var white = "#fff";
 var styles = /*#__PURE__*/StyleSheet.create({
   container: {
     alignItems: "center",
-    backgroundColor: containerBackgroundColor,
     bottom: 0,
     flex: 1,
     flexDirection: "column",
@@ -24,19 +21,17 @@ var styles = /*#__PURE__*/StyleSheet.create({
     alignItems: "center",
     alignSelf: "stretch",
     flex: 1,
-    justifyContent: "center"
+    justifyContent: "space-evenly"
   },
   fullScreenContainer: {
     alignItems: "center",
     alignSelf: "stretch",
-    justifyContent: "center",
-    paddingLeft: 20
+    justifyContent: "flex-end",
+    paddingLeft: 20,
+    marginBottom: 10
   },
   playButton: {
     alignItems: "center",
-    borderColor: playButtonBorderColor,
-    borderRadius: 3,
-    borderWidth: 1.5,
     height: 50,
     justifyContent: "center",
     width: 50
@@ -52,7 +47,7 @@ var styles = /*#__PURE__*/StyleSheet.create({
   progressContainer: {
     flexDirection: "row",
     justifyContent: "flex-end",
-    marginBottom: -25
+    alignItems: "flex-end"
   },
   progressSlider: {
     alignSelf: "stretch"
@@ -63,7 +58,7 @@ var styles = /*#__PURE__*/StyleSheet.create({
     width: 25
   },
   thumb: {
-    backgroundColor: white,
+    backgroundColor: "#f80e37",
     borderRadius: 50,
     borderWidth: 3,
     height: 20,
@@ -131,26 +126,64 @@ var getPlayerStateIcon = function getPlayerStateIcon(playerState) {
   }
 };
 
+var rewindIcon = /*#__PURE__*/require("./assets/ic_rw.png");
+
+var fastforwardIcon = /*#__PURE__*/require("./assets/ic_ff.png");
+
 var Controls = function Controls(props) {
   var isLoading = props.isLoading,
-      mainColor = props.mainColor,
       playerState = props.playerState,
       onReplay = props.onReplay,
-      onPause = props.onPause;
+      onPause = props.onPause,
+      duration = props.duration,
+      progress = props.progress,
+      onSeek = props.onSeek,
+      live = props.live;
   var icon = getPlayerStateIcon(playerState);
   var pressAction = playerState === PLAYER_STATES.ENDED ? onReplay : onPause;
+
+  var ffTenSeconds = function ffTenSeconds() {
+    var availableDuration = duration - progress;
+
+    if (availableDuration < 10) {
+      onSeek(availableDuration);
+    } else {
+      onSeek(progress + 10);
+    }
+  };
+
+  var rwTenSeconds = function rwTenSeconds() {
+    onSeek(progress < 10 ? progress : 10);
+  };
+
   var content = isLoading ? React.createElement(ActivityIndicator, {
     size: "large",
     color: "#FFF"
-  }) : React.createElement(TouchableOpacity, {
-    style: [styles.playButton, {
-      backgroundColor: mainColor
-    }],
-    onPress: pressAction
+  }) : React.createElement(React.Fragment, null, !live && React.createElement(TouchableOpacity, {
+    style: [styles.playButton],
+    onPress: rwTenSeconds,
+    accessibilityLabel: "Rewind 10 seconds",
+    accessibilityHint: "Rewinds the video 10 seconds"
+  }, React.createElement(Image, {
+    source: rewindIcon,
+    style: styles.playIcon
+  })), React.createElement(TouchableOpacity, {
+    style: [styles.playButton],
+    onPress: pressAction,
+    accessibilityLabel: PLAYER_STATES.PAUSED ? "Tap to Play" : "Tap to Pause",
+    accessibilityHint: "Plays and Pauses the Video"
   }, React.createElement(Image, {
     source: icon,
     style: styles.playIcon
-  }));
+  })), !live && React.createElement(TouchableOpacity, {
+    style: [styles.playButton],
+    onPress: ffTenSeconds,
+    accessibilityLabel: "Fast-forward 10 seconds",
+    accessibilityHint: "Fast-forwards the video 10 seconds"
+  }, React.createElement(Image, {
+    source: fastforwardIcon,
+    style: styles.playIcon
+  })));
   return React.createElement(View, {
     style: [styles.controlsRow]
   }, content);
@@ -164,7 +197,8 @@ var Slider = function Slider(props) {
       mainColor = props.mainColor,
       onFullScreen = props.onFullScreen,
       onPause = props.onPause,
-      progress = props.progress;
+      progress = props.progress,
+      live = props.live;
   var containerStyle = (customSliderStyle === null || customSliderStyle === void 0 ? void 0 : customSliderStyle.containerStyle) || {};
   var customTrackStyle = (customSliderStyle === null || customSliderStyle === void 0 ? void 0 : customSliderStyle.trackStyle) || {};
   var customThumbStyle = (customSliderStyle === null || customSliderStyle === void 0 ? void 0 : customSliderStyle.thumbStyle) || {};
@@ -186,6 +220,8 @@ var Slider = function Slider(props) {
     onPause();
   };
 
+  console.log('duration', duration, humanizeVideoDuration(duration));
+  console.log('progress', progress, humanizeVideoDuration(progress));
   return React.createElement(View, {
     style: [styles.controlsRow, styles.progressContainer, containerStyle]
   }, React.createElement(View, {
@@ -196,7 +232,7 @@ var Slider = function Slider(props) {
     style: styles.timerLabel
   }, humanizeVideoDuration(progress)), React.createElement(Text, {
     style: styles.timerLabel
-  }, humanizeVideoDuration(duration))), React.createElement(RNSlider, {
+  }, !live ? humanizeVideoDuration(duration) : 'Live')), React.createElement(RNSlider, {
     style: [styles.progressSlider],
     onValueChange: dragging,
     onSlidingComplete: seekVideo,
@@ -241,7 +277,9 @@ var MediaControls = function MediaControls(props) {
       showOnStart = _props$showOnStart === void 0 ? true : _props$showOnStart,
       sliderStyle = props.sliderStyle,
       _props$toolbarStyle = props.toolbarStyle,
-      customToolbarStyle = _props$toolbarStyle === void 0 ? {} : _props$toolbarStyle;
+      customToolbarStyle = _props$toolbarStyle === void 0 ? {} : _props$toolbarStyle,
+      _props$live = props.live,
+      live = _props$live === void 0 ? false : _props$live;
 
   var _ref = function () {
     if (showOnStart) {
@@ -284,6 +322,12 @@ var MediaControls = function MediaControls(props) {
       }
     });
   };
+
+  useEffect(function () {
+    if (!isLoading) {
+      fadeOutControls(fadeOutDelay);
+    }
+  }, [isLoading]);
 
   var fadeInControls = function fadeInControls(loop) {
     if (loop === void 0) {
@@ -348,6 +392,7 @@ var MediaControls = function MediaControls(props) {
   };
 
   return React.createElement(TouchableWithoutFeedback, {
+    accessible: false,
     onPress: toggleControls
   }, React.createElement(Animated.View, {
     style: [styles.container, {
@@ -361,8 +406,11 @@ var MediaControls = function MediaControls(props) {
     onPause: onPause,
     onReplay: onReplay,
     isLoading: isLoading,
-    mainColor: mainColor,
-    playerState: playerState
+    playerState: playerState,
+    progress: progress,
+    duration: duration,
+    live: live,
+    onSeek: onSeek
   }), React.createElement(Slider, {
     progress: progress,
     duration: duration,
@@ -372,7 +420,8 @@ var MediaControls = function MediaControls(props) {
     onSeek: onSeek,
     onSeeking: onSeeking,
     onPause: onPause,
-    customSliderStyle: sliderStyle
+    customSliderStyle: sliderStyle,
+    live: live
   }))));
 };
 
